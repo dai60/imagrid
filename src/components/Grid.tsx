@@ -1,29 +1,28 @@
 import { closestCenter, DndContext, DragEndEvent, DragStartEvent, KeyboardSensor, PointerSensor, UniqueIdentifier, useSensor, useSensors } from "@dnd-kit/core";
-import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
+import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useState } from "react";
+import { CSSProperties, useState } from "react";
+import { useMontage } from "../Montage";
 
 const GridItem = ({ src, active }: { src: string; active: boolean }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: src });
 
-    const style = {
+    const style: CSSProperties = {
         transform: CSS.Transform.toString(transform),
         transition,
+        zIndex: active ? 10 : 0,
     };
 
     return (
-        <div ref={setNodeRef} style={{ zIndex: active ? 10 : 0, ...style }} {...attributes} {...listeners}>
+        <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
             <img className="w-full h-full object-cover" src={src} alt="" />
         </div>
     );
 }
 
-type GridProps = {
-    images: string[];
-    setImages: React.Dispatch<React.SetStateAction<string[]>>;
-}
+const Grid = () => {
+    const { state, dispatch } = useMontage();
 
-const Grid = ({ images, setImages }: GridProps) => {
     const [active, setActive] = useState<UniqueIdentifier | undefined>(undefined);
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -39,20 +38,18 @@ const Grid = ({ images, setImages }: GridProps) => {
     const handleDragEnd = (e: DragEndEvent) => {
         const { active, over } = e;
         if (active.id !== over?.id) {
-            setImages(prev => {
-                const oldIndex = prev.findIndex(image => image === active.id);
-                const newIndex = prev.findIndex(image => image === over?.id);
-                return arrayMove(prev, oldIndex, newIndex);
-            })
+            const oldIndex = state.images.findIndex(image => image === active.id);
+            const newIndex = state.images.findIndex(image => image === over?.id);
+            dispatch({ type: "MOVE_IMAGE", from: oldIndex, to: newIndex });
         }
         setActive(undefined);
     }
 
     return (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <SortableContext items={images} strategy={rectSortingStrategy}>
+            <SortableContext items={state.images} strategy={rectSortingStrategy}>
                 <div className="grid grid-cols-2 w-2xl">
-                    {images.map(image => <GridItem key={image} src={image} active={image === active} />)}
+                    {state.images.map(image => <GridItem key={image} src={image} active={image === active} />)}
                 </div>
             </SortableContext>
         </DndContext>
