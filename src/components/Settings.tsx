@@ -1,5 +1,5 @@
 import { ChangeEventHandler } from "react";
-import { useMontage } from "../Montage";
+import useMontage from "../hooks/useMontage";
 
 const Settings = () => {
     const { elemWidth, elemHeight, state, dispatch } = useMontage();

@@ -1,10 +1,11 @@
-import { closestCenter, DndContext, DragEndEvent, DraggableAttributes, DragOverlay, DragStartEvent, KeyboardSensor, MeasuringStrategy, MouseSensor, PointerSensor, TouchSensor, UniqueIdentifier, useSensor, useSensors } from "@dnd-kit/core";
-import { defaultAnimateLayoutChanges, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
+import { closestCenter, DndContext, DragEndEvent, DraggableAttributes, DragOverlay, DragStartEvent, KeyboardSensor, MeasuringStrategy, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CSSProperties, Ref, useLayoutEffect, useRef, useState } from "react";
-import { useMontage } from "../Montage";
+import { CSSProperties, Ref, useRef, useState } from "react";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+import useMontage from "../hooks/useMontage";
+import useObserver from "../hooks/useObserver";
 
 type ItemProps = {
     src: string;
@@ -65,7 +66,7 @@ const Grid = () => {
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
 
     const divRef = useRef<HTMLDivElement>(null);
-    const [divSize, setDivSize] = useState({ width: 0, height: 0 });
+    const [divWidth, divHeight] = useObserver(divRef);
 
     const [active, setActive] = useState<string | undefined>(undefined);
     const sensors = useSensors(
@@ -75,21 +76,6 @@ const Grid = () => {
             coordinateGetter: sortableKeyboardCoordinates,
         }),
     );
-
-    useLayoutEffect(() => {
-        if (!divRef.current) {
-            return;
-        }
-
-        const observer = new ResizeObserver(entries => {
-            for (const { contentRect: { width, height } } of entries) {
-                console.log(width, height);
-                setDivSize({ width, height });
-            }
-        });
-        observer.observe(divRef.current);
-        return () => observer.disconnect();
-    }, []);
 
     const handleDragStart = (e: DragStartEvent) => {
         if (typeof e.active.id !== "string") {
@@ -117,7 +103,7 @@ const Grid = () => {
         gridTemplateRows: `repeat(${state.gridSize.rows}, 1fr)`,
     };
 
-    if (divSize.width / gridWidth < divSize.height / gridHeight) {
+    if (divWidth / gridWidth < divHeight / gridHeight) {
         style.width = "100%";
     }
     else {

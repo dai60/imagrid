@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { MontageImage, useMontage } from "./Montage";
+import { MontageImage } from "./Montage";
 import Upload from "./components/Upload";
 import Grid from "./components/Grid";
 import Download from "./components/Download";
 import Settings from "./components/Settings";
+import useMontage from "./hooks/useMontage";
 
 const App = () => {
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
@@ -24,7 +25,7 @@ const App = () => {
 
     }
 
-    const handleDownload = () => {
+    const handleDownload = (type: string, quality: number) => {
         setRendering(true);
 
         const canvas = document.createElement("canvas");
@@ -60,13 +61,19 @@ const App = () => {
             const link = document.createElement("a");
             link.style.display = "none";
             link.href = url;
-            link.download = `${Date.now()}.jpeg`;
+
+            const extension =
+                type === "image/png" ? ".png" :
+                type === "image/jpeg" ? ".jpeg" :
+                type === "image/webp" ? ".webp" : "";
+
+            link.download = `${Date.now()}${extension}`;
 
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             setRendering(false);
-        }, "image/jpeg", 90);
+        }, type, quality);
     }
 
     return (

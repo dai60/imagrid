@@ -1,5 +1,5 @@
 import { arrayMove } from "@dnd-kit/sortable";
-import { act, createContext, Dispatch, PropsWithChildren, useContext, useReducer } from "react";
+import { createContext, Dispatch, PropsWithChildren, useReducer } from "react";
 
 export type MontageImage = {
     url: string;
@@ -65,7 +65,7 @@ type MontageContextProps = {
     elemHeight: number;
 }
 
-const MontageContext = createContext<MontageContextProps | undefined>(undefined);
+export const MontageContext = createContext<MontageContextProps | undefined>(undefined);
 
 export const MontageContextProvider = ({ children }: PropsWithChildren) => {
     const [state, dispatch] = useReducer(montageReducer, {
@@ -92,12 +92,4 @@ export const MontageContextProvider = ({ children }: PropsWithChildren) => {
             {children}
         </MontageContext.Provider>
     );
-}
-
-export const useMontage = () => {
-    const context = useContext(MontageContext);
-    if (!context) {
-        throw new Error("useMontageContext must be used within a MontageContextProvider");
-    }
-    return context;
 }
