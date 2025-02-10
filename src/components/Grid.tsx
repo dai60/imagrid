@@ -1,7 +1,7 @@
-import { closestCenter, DndContext, DragEndEvent, DraggableAttributes, DragOverlay, DragStartEvent, KeyboardSensor, MeasuringStrategy, PointerSensor, UniqueIdentifier, useSensor, useSensors } from "@dnd-kit/core";
+import { closestCenter, DndContext, DragEndEvent, DraggableAttributes, DragOverlay, DragStartEvent, KeyboardSensor, MeasuringStrategy, MouseSensor, PointerSensor, TouchSensor, UniqueIdentifier, useSensor, useSensors } from "@dnd-kit/core";
 import { defaultAnimateLayoutChanges, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CSSProperties, Ref, useState } from "react";
+import { CSSProperties, Ref, useLayoutEffect, useRef, useState } from "react";
 import { useMontage } from "../Montage";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
@@ -19,7 +19,10 @@ const Item = ({ src, ref, style, attributes, listeners }: ItemProps) => {
 
     const handleDelete = () => {
         const index = state.images.findIndex(image => image.url === src);
-        dispatch({ type: "REMOVE_IMAGE", index });
+        if (index !== -1) {
+            dispatch({ type: "REMOVE_IMAGE", index });
+            URL.revokeObjectURL(src);
+        }
     }
 
     const itemStyle: CSSProperties = {
@@ -36,15 +39,21 @@ const Item = ({ src, ref, style, attributes, listeners }: ItemProps) => {
     );
 }
 
-const GridItem = ({ src }: { src: string }) => {
+type GridItemProps = {
+    src: string;
+    active?: boolean;
+}
+
+const GridItem = ({ src, active }: GridItemProps) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
         id: src,
-        animateLayoutChanges: (args) => defaultAnimateLayoutChanges({ ...args, wasDragging: true }),
+        // animateLayoutChanges: (args) => defaultAnimateLayoutChanges({ ...args, wasDragging: true }),
     });
 
     const style: CSSProperties = {
         transform: CSS.Transform.toString(transform),
         transition,
+        opacity: active ? "20%" : "100%",
     };
 
     return (
@@ -55,13 +64,32 @@ const GridItem = ({ src }: { src: string }) => {
 const Grid = () => {
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
 
+    const divRef = useRef<HTMLDivElement>(null);
+    const [divSize, setDivSize] = useState({ width: 0, height: 0 });
+
     const [active, setActive] = useState<string | undefined>(undefined);
     const sensors = useSensors(
-        useSensor(PointerSensor),
+        useSensor(MouseSensor),
+        useSensor(TouchSensor),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
         }),
     );
+
+    useLayoutEffect(() => {
+        if (!divRef.current) {
+            return;
+        }
+
+        const observer = new ResizeObserver(entries => {
+            for (const { contentRect: { width, height } } of entries) {
+                console.log(width, height);
+                setDivSize({ width, height });
+            }
+        });
+        observer.observe(divRef.current);
+        return () => observer.disconnect();
+    }, []);
 
     const handleDragStart = (e: DragStartEvent) => {
         if (typeof e.active.id !== "string") {
@@ -89,37 +117,33 @@ const Grid = () => {
         gridTemplateRows: `repeat(${state.gridSize.rows}, 1fr)`,
     };
 
-    if (gridWidth > gridHeight) {
+    if (divSize.width / gridWidth < divSize.height / gridHeight) {
         style.width = "100%";
     }
     else {
         style.height = "100%";
     }
 
-    if (state.images.length === 0) {
-        return (
-            <p className="select-none">Add some images to get started</p>
-        );
-    }
-
     return (
-        <DndContext
-            sensors={sensors}
-            measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
-            modifiers={[restrictToParentElement]}
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-        >
-            <SortableContext items={state.images.map(image => image.url)} strategy={rectSortingStrategy}>
-                <div className="grid" style={style}>
-                    {state.images.map(image => <GridItem key={image.url} src={image.url} />)}
-                </div>
-            </SortableContext>
-            <DragOverlay>
-                {active && <Item src={active} />}
-            </DragOverlay>
-        </DndContext>
+        <div ref={divRef} className="flex justify-center items-center w-full h-full">
+            <DndContext
+                sensors={sensors}
+                measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
+                modifiers={[restrictToParentElement]}
+                collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+            >
+                <SortableContext items={state.images.map(image => image.url)} strategy={rectSortingStrategy}>
+                    <div className="grid" style={style}>
+                        {state.images.map(image => <GridItem key={image.url} src={image.url} active={image.url === active} />)}
+                    </div>
+                </SortableContext>
+                <DragOverlay>
+                    {active && <Item src={active} />}
+                </DragOverlay>
+            </DndContext>
+        </div>
     );
 }
 

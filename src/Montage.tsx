@@ -1,5 +1,5 @@
 import { arrayMove } from "@dnd-kit/sortable";
-import { createContext, Dispatch, PropsWithChildren, useContext, useReducer } from "react";
+import { act, createContext, Dispatch, PropsWithChildren, useContext, useReducer } from "react";
 
 export type MontageImage = {
     url: string;
@@ -25,19 +25,30 @@ type MontageAction =
 const montageReducer = (state: MontageState, action: MontageAction): MontageState => {
     switch (action.type) {
         case "ADD_IMAGES":
-            return { ...state, images: [...state.images, ...action.images] };
+            const newImages = [...state.images, ...action.images];
+            const prevCols = state.gridSize.cols;
+            const newCols = Math.ceil(newImages.length / state.gridSize.rows);
+            return { ...state, images: newImages, gridSize: { rows: state.gridSize.rows, cols: Math.max(prevCols, newCols) } };
         case "REMOVE_IMAGE":
             return { ...state, images: state.images.toSpliced(action.index, 1) };
         case "MOVE_IMAGE":
             return { ...state, images: arrayMove(state.images, action.from, action.to) };
         case "CHANGE_GRID_ROWS": {
             const newRows = action.rows;
+            if (isNaN(newRows) || newRows <= 0) {
+                return state;
+            }
+
             const prevCols = state.gridSize.cols;
             const newCols = Math.ceil(state.images.length / newRows);
             return { ...state, gridSize: { rows: newRows, cols: Math.max(prevCols, newCols) } };
         }
         case "CHANGE_GRID_COLS": {
             const newCols = action.cols;
+            if (isNaN(newCols) || newCols <= 0) {
+                return state;
+            }
+
             const prevRows = state.gridSize.rows;
             const newRows = Math.ceil(state.images.length / newCols);
             return { ...state, gridSize: { rows: Math.max(prevRows, newRows), cols: newCols } };

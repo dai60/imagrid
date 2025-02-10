@@ -70,15 +70,15 @@ const App = () => {
     }
 
     return (
-        <div className="flex max-w-screen h-screen max-h-screen">
-            <aside className="bg-black text-white flex flex-col w-80 p-4">
+        <div className="flex flex-col-reverse sm:flex-row max-w-screen h-screen max-h-screen">
+            <aside className="bg-black text-white flex flex-col w-full sm:w-80 p-4">
                 <Upload onUpload={handleUpload} />
                 <Settings />
                 <div className="mt-auto">
                     <Download disabled={rendering} onDownload={handleDownload} />
                 </div>
             </aside>
-            <main className="p-8 flex flex-1 justify-center items-center">
+            <main className="p-8 flex-1">
                 <Grid />
             </main>
         </div>
