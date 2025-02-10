@@ -89,12 +89,17 @@ const Grid = () => {
         gridTemplateRows: `repeat(${state.gridSize.rows}, 1fr)`,
     };
 
-    console.log(gridWidth, gridHeight);
     if (gridWidth > gridHeight) {
         style.width = "100%";
     }
     else {
         style.height = "100%";
+    }
+
+    if (state.images.length === 0) {
+        return (
+            <p className="select-none">Add some images to get started</p>
+        );
     }
 
     return (

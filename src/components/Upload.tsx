@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useId } from "react";
+import { ChangeEventHandler, useId, useRef } from "react";
 
 type UploadProps = {
     onUpload: (urls: string[]) => void;
@@ -6,6 +6,7 @@ type UploadProps = {
 
 const Upload = ({ onUpload }: UploadProps) => {
     const id = useId();
+    const fileRef = useRef<HTMLInputElement>(null);
 
     const handleChange: ChangeEventHandler<HTMLInputElement> = e => {
         if (!e.target.files) {
@@ -16,12 +17,14 @@ const Upload = ({ onUpload }: UploadProps) => {
             return URL.createObjectURL(file);
         });
         onUpload(images);
+        e.target.value = "";
     }
 
     return (
-        <div>
-            <label className="text-xs block" htmlFor={id}>Upload images:</label>
-            <input type="file" id={id} accept="image/*" multiple onChange={handleChange} />
+        <div className="my-2">
+            <label className="block text-xs mb-1" htmlFor={id}>Upload images:</label>
+            <button className="border-white border-1 rounded-md px-2 py-1 cursor-pointer" id={id} onClick={() => fileRef.current?.click()}>Choose Files</button>
+            <input className="hidden" ref={fileRef} type="file" accept="image/*" multiple onChange={handleChange} />
         </div>
     );
 }
