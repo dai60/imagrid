@@ -5,24 +5,25 @@ import Grid from "./components/Grid";
 import Download from "./components/Download";
 import Settings from "./components/Settings";
 import useMontage from "./hooks/useMontage";
+import useDrop from "./hooks/useDrop";
 
 const App = () => {
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
     const [rendering, setRendering] = useState(false);
 
-    const handleUpload = (urls: string[]) => {
-        const images = urls.map(url => {
-            return new Promise<MontageImage>(resolve => {
-                const img = new Image();
-                img.onload = () => resolve({ url, img });
-                img.src = url;
-            });
-        })
+    useDrop(files => handleUpload(files));
+
+    const handleUpload = (files: File[]) => {
+        const images = files.map(file => new Promise<MontageImage>(resolve => {
+            const url = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => resolve({ url, img });
+            img.src = url;
+        }));
 
         Promise.all(images).then(images => {
             dispatch({ type: "ADD_IMAGES", images });
         });
-
     }
 
     const handleDownload = (type: string, quality: number) => {

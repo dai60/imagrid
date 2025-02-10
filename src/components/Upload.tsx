@@ -1,7 +1,7 @@
 import { ChangeEventHandler, useId, useRef } from "react";
 
 type UploadProps = {
-    onUpload: (urls: string[]) => void;
+    onUpload: (files: File[]) => void;
 }
 
 const Upload = ({ onUpload }: UploadProps) => {
@@ -12,11 +12,7 @@ const Upload = ({ onUpload }: UploadProps) => {
         if (!e.target.files) {
             return;
         }
-
-        const images = Array.from(e.target.files).map(file => {
-            return URL.createObjectURL(file);
-        });
-        onUpload(images);
+        onUpload(Array.from(e.target.files));
         e.target.value = "";
     }
 
