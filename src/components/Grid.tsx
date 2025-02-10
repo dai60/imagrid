@@ -1,29 +1,61 @@
-import { closestCenter, DndContext, DragEndEvent, DragStartEvent, KeyboardSensor, PointerSensor, UniqueIdentifier, useSensor, useSensors } from "@dnd-kit/core";
-import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
+import { closestCenter, DndContext, DragEndEvent, DraggableAttributes, DragOverlay, DragStartEvent, KeyboardSensor, MeasuringStrategy, PointerSensor, UniqueIdentifier, useSensor, useSensors } from "@dnd-kit/core";
+import { defaultAnimateLayoutChanges, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CSSProperties, useState } from "react";
+import { CSSProperties, Ref, useState } from "react";
 import { useMontage } from "../Montage";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
+import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 
-const GridItem = ({ src, active }: { src: string; active: boolean }) => {
-    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: src });
+type ItemProps = {
+    src: string;
+    ref?: Ref<HTMLDivElement>;
+    style?: CSSProperties;
+    attributes?: DraggableAttributes;
+    listeners?: SyntheticListenerMap;
+}
 
-    const style: CSSProperties = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-        zIndex: active ? 10 : 0,
+const Item = ({ src, ref, style, attributes, listeners }: ItemProps) => {
+    const { elemWidth, elemHeight, state, dispatch } = useMontage();
+
+    const handleDelete = () => {
+        const index = state.images.findIndex(image => image.url === src);
+        dispatch({ type: "REMOVE_IMAGE", index });
+    }
+
+    const itemStyle: CSSProperties = {
+        aspectRatio: `${elemWidth} / ${elemHeight}`,
+        backgroundImage: `url(${src})`,
+        ...style,
     };
 
     return (
-        <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-            <img className="w-full h-full object-cover" src={src} alt="" />
+        <div className="relative w-full bg-contain bg-center bg-no-repeat" ref={ref} style={itemStyle}>
+            <div className="absolute inset-0 w-full h-full" {...attributes} {...listeners}></div>
+            <button className="absolute top-2 right-2 cursor-pointer" onClick={handleDelete}>X</button>
         </div>
     );
 }
 
-const Grid = () => {
-    const { state, dispatch } = useMontage();
+const GridItem = ({ src }: { src: string }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+        id: src,
+        animateLayoutChanges: (args) => defaultAnimateLayoutChanges({ ...args, wasDragging: true }),
+    });
 
-    const [active, setActive] = useState<UniqueIdentifier | undefined>(undefined);
+    const style: CSSProperties = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <Item ref={setNodeRef} src={src} style={style} attributes={attributes} listeners={listeners} />
+    );
+}
+
+const Grid = () => {
+    const { elemWidth, elemHeight, state, dispatch } = useMontage();
+
+    const [active, setActive] = useState<string | undefined>(undefined);
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -32,26 +64,56 @@ const Grid = () => {
     );
 
     const handleDragStart = (e: DragStartEvent) => {
+        if (typeof e.active.id !== "string") {
+            throw new Error("only string ids allowed");
+        }
         setActive(e.active.id);
     }
 
     const handleDragEnd = (e: DragEndEvent) => {
         const { active, over } = e;
         if (active.id !== over?.id) {
-            const oldIndex = state.images.findIndex(image => image === active.id);
-            const newIndex = state.images.findIndex(image => image === over?.id);
+            const oldIndex = state.images.findIndex(image => image.url === active.id);
+            const newIndex = state.images.findIndex(image => image.url === over?.id);
             dispatch({ type: "MOVE_IMAGE", from: oldIndex, to: newIndex });
         }
         setActive(undefined);
     }
 
+    const gridWidth = elemWidth * state.gridSize.cols;
+    const gridHeight = elemHeight * state.gridSize.rows;
+
+    const style: CSSProperties = {
+        aspectRatio: `${gridWidth} / ${gridHeight}`,
+        gridTemplateColumns: `repeat(${state.gridSize.cols}, 1fr)`,
+        gridTemplateRows: `repeat(${state.gridSize.rows}, 1fr)`,
+    };
+
+    console.log(gridWidth, gridHeight);
+    if (gridWidth > gridHeight) {
+        style.width = "100%";
+    }
+    else {
+        style.height = "100%";
+    }
+
     return (
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <SortableContext items={state.images} strategy={rectSortingStrategy}>
-                <div className="grid grid-cols-2 w-2xl">
-                    {state.images.map(image => <GridItem key={image} src={image} active={image === active} />)}
+        <DndContext
+            sensors={sensors}
+            measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
+            modifiers={[restrictToParentElement]}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+        >
+            <SortableContext items={state.images.map(image => image.url)} strategy={rectSortingStrategy}>
+                <div className="grid" style={style}>
+                    {state.images.map(image => <GridItem key={image.url} src={image.url} />)}
                 </div>
             </SortableContext>
+            <DragOverlay>
+                {active && <Item src={active} />}
+            </DragOverlay>
         </DndContext>
     );
 }
