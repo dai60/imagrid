@@ -112,23 +112,27 @@ const Grid = () => {
 
     return (
         <div ref={divRef} className="flex justify-center items-center w-full h-full">
-            <DndContext
-                sensors={sensors}
-                measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
-                modifiers={[restrictToParentElement]}
-                collisionDetection={closestCenter}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-            >
-                <SortableContext items={state.images.map(image => image.url)} strategy={rectSortingStrategy}>
-                    <div className="grid" style={style}>
-                        {state.images.map(image => <GridItem key={image.url} src={image.url} active={image.url === active} />)}
-                    </div>
-                </SortableContext>
-                <DragOverlay>
-                    {active && <Item src={active} />}
-                </DragOverlay>
-            </DndContext>
+            {state.images.length === 0 ? (
+                <p className="select-none text-sm">Add some images to get started</p>
+            ) : (
+                <DndContext
+                    sensors={sensors}
+                    measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
+                    modifiers={[restrictToParentElement]}
+                    collisionDetection={closestCenter}
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                >
+                    <SortableContext items={state.images.map(image => image.url)} strategy={rectSortingStrategy}>
+                        <div className="grid border-2 border-black/20 border-dashed" style={style}>
+                            {state.images.map(image => <GridItem key={image.url} src={image.url} active={image.url === active} />)}
+                        </div>
+                    </SortableContext>
+                    <DragOverlay>
+                        {active && <Item src={active} />}
+                    </DragOverlay>
+                </DndContext>
+            )}
         </div>
     );
 }

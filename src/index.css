@@ -1,1 +1,4 @@
 @import "tailwindcss";
+
+/* temporary chrome bug */
+@custom-variant hover (&:hover);
