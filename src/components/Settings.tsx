@@ -1,5 +1,6 @@
 import { ChangeEventHandler, useId } from "react";
 import useMontage from "../hooks/useMontage";
+import { MdAdd as Add, MdRemove as Remove } from "react-icons/md";
 
 type CounterEventHandler = (change: number) => void;
 
@@ -20,10 +21,14 @@ const Counter = ({ label, value, min, max, onChange }: CounterProps) => {
     return (
         <>
             <label className="block text-xs mb-1" htmlFor={id}>{label}</label>
-            <div className="w-fit border border-white rounded-md overflow-hidden">
-                <input className="w-14 px-2" type="number" id={id} readOnly disabled value={value} min={min} max={max} step={1} />
-                <button className="px-2 py-1 w-8 disabled:bg-zinc-600 cursor-pointer disabled:cursor-default" disabled={isMax} onClick={() => onChange(1)}>+</button>
-                <button className="px-2 py-1 w-8 disabled:bg-zinc-600 cursor-pointer disabled:cursor-default" disabled={isMin} onClick={() => onChange(-1)}>-</button>
+            <div className="flex items-stretch w-fit border border-white rounded-md overflow-hidden">
+                <input className="w-14 px-2 py-1" type="number" id={id} readOnly disabled value={value} min={min} max={max} step={1} />
+                <button className="px-2 py-1 w-8 disabled:bg-zinc-700 cursor-pointer disabled:cursor-default" disabled={isMax} onClick={() => onChange(1)}>
+                    <Add />
+                </button>
+                <button className="px-2 py-1 w-8 disabled:bg-zinc-700 cursor-pointer disabled:cursor-default" disabled={isMin} onClick={() => onChange(-1)}>
+                    <Remove />
+                </button>
             </div>
         </>
     );

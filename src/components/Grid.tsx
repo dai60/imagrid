@@ -1,11 +1,12 @@
 import { closestCenter, DndContext, DragEndEvent, DraggableAttributes, DragOverlay, DragStartEvent, KeyboardSensor, MeasuringStrategy, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CSSProperties, Ref, useRef, useState } from "react";
-import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+import { CSSProperties, Ref, useRef, useState } from "react";
 import useMontage from "../hooks/useMontage";
 import useObserver from "../hooks/useObserver";
+import { MdClose as Close } from "react-icons/md";
 
 type ItemProps = {
     src: string;
@@ -35,7 +36,9 @@ const Item = ({ src, ref, style, attributes, listeners }: ItemProps) => {
     return (
         <div className="relative w-full bg-contain bg-center bg-no-repeat" ref={ref} style={itemStyle}>
             <div className="absolute inset-0 w-full h-full" {...attributes} {...listeners}></div>
-            <button className="absolute top-2 right-2 cursor-pointer" onClick={handleDelete}>X</button>
+            <button className="absolute top-2 right-2 cursor-pointer max-w-6 max-h-6 min-w-4 min-h-4 size-[25%]" onClick={handleDelete}>
+                <Close className="mix-blend-difference text-white size-full hover:invert-50 transition-all" />
+            </button>
         </div>
     );
 }
@@ -111,7 +114,7 @@ const Grid = () => {
     }
 
     return (
-        <div ref={divRef} className="flex justify-center items-center w-full h-full">
+        <div ref={divRef} className="flex justify-center items-center size-full">
             {state.images.length === 0 ? (
                 <p className="select-none text-sm">Add some images to get started</p>
             ) : (
