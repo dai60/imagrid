@@ -1,4 +1,7 @@
 @import "tailwindcss";
 
-/* temporary chrome bug */
-@custom-variant hover (&:hover);
+@theme {
+    --color-primary: var(--color-zinc-50);
+    --color-background: var(--color-black);
+    --color-disabled: var(--color-zinc-700);
+}

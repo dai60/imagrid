@@ -21,12 +21,12 @@ const Counter = ({ label, value, min, max, onChange }: CounterProps) => {
     return (
         <>
             <label className="block text-xs mb-1" htmlFor={id}>{label}</label>
-            <div className="flex items-stretch w-fit border border-white rounded-md overflow-hidden">
+            <div className="flex items-stretch w-fit border border-primary rounded-md overflow-hidden">
                 <input className="w-14 px-2 py-1" type="number" id={id} readOnly disabled value={value} min={min} max={max} step={1} />
-                <button className="px-2 py-1 w-8 disabled:bg-zinc-700 cursor-pointer disabled:cursor-default" disabled={isMax} onClick={() => onChange(1)}>
+                <button className="px-2 py-1 w-8 disabled:bg-disabled cursor-pointer disabled:cursor-default" disabled={isMax} onClick={() => onChange(1)}>
                     <Add />
                 </button>
-                <button className="px-2 py-1 w-8 disabled:bg-zinc-700 cursor-pointer disabled:cursor-default" disabled={isMin} onClick={() => onChange(-1)}>
+                <button className="px-2 py-1 w-8 disabled:bg-disabled cursor-pointer disabled:cursor-default" disabled={isMin} onClick={() => onChange(-1)}>
                     <Remove />
                 </button>
             </div>
@@ -63,7 +63,7 @@ const Settings = () => {
             <div className="my-2">
                 <label className="block text-xs mb-1">Element size:</label>
                 <div className="flex items-center">
-                    <select className="bg-black border-white border-1 px-2 py-1 rounded-md" defaultValue="contain" onChange={handleElemSize}>
+                    <select className="bg-background border-primary border-1 px-2 py-1 rounded-md" defaultValue="contain" onChange={handleElemSize}>
                         <option value="contain">Contain Image</option>
                         <option value="cover">Fit Image</option>
                     </select>

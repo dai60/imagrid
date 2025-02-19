@@ -30,8 +30,8 @@ const App = () => {
         setRendering(true);
 
         const canvas = document.createElement("canvas");
-        canvas.width = elemWidth * state.gridSize.cols;
-        canvas.height = elemHeight * state.gridSize.rows;
+        canvas.width = elemWidth * state.gridCols;
+        canvas.height = elemHeight * state.gridRows;
         const ctx = canvas.getContext("2d");
         if (!ctx) {
             console.error("error getting canvas context");
@@ -39,9 +39,9 @@ const App = () => {
             return;
         }
 
-        for (let y = 0; y < state.gridSize.rows; ++y) {
-            for (let x = 0; x < state.gridSize.cols; ++x) {
-                const index = y * state.gridSize.cols + x;
+        for (let y = 0; y < state.gridRows; ++y) {
+            for (let x = 0; x < state.gridCols; ++x) {
+                const index = y * state.gridCols + x;
                 if (index >= state.images.length) {
                     continue;
                 }
@@ -79,7 +79,7 @@ const App = () => {
 
     return (
         <div className="flex flex-col-reverse sm:flex-row max-w-screen h-screen max-h-screen">
-            <aside className="bg-black text-white flex flex-col w-full sm:w-80 p-4">
+            <aside className="bg-background text-primary flex flex-col w-full sm:w-80 p-4">
                 <Upload onUpload={handleUpload} />
                 <Settings />
                 <div className="mt-auto">

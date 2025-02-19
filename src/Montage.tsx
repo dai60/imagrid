@@ -10,10 +10,10 @@ type ElemSize = "contain" | "cover" | { width: number; height: number; };
 
 type MontageState = {
     images: MontageImage[];
-    gridSize: {
-        rows: number;
-        cols: number;
-    };
+    gridRows: number;
+    gridCols: number;
+    maxGridRows: number;
+    maxGridCols: number;
     elemSize: ElemSize;
 }
 
@@ -29,9 +29,9 @@ const montageReducer = (state: MontageState, action: MontageAction): MontageStat
     switch (action.type) {
         case "ADD_IMAGES":
             const newImages = [...state.images, ...action.images];
-            const prevCols = state.gridSize.cols;
-            const newCols = Math.ceil(newImages.length / state.gridSize.rows);
-            return { ...state, images: newImages, gridSize: { rows: state.gridSize.rows, cols: Math.max(prevCols, newCols) } };
+            const prevCols = state.gridCols;
+            const newCols = Math.ceil(newImages.length / state.gridRows);
+            return { ...state, images: newImages, gridCols: Math.max(prevCols, newCols) };
         case "REMOVE_IMAGE":
             return { ...state, images: state.images.toSpliced(action.index, 1) };
         case "MOVE_IMAGE":
@@ -42,9 +42,9 @@ const montageReducer = (state: MontageState, action: MontageAction): MontageStat
                 return state;
             }
 
-            const prevCols = state.gridSize.cols;
+            const prevCols = state.gridCols;
             const newCols = Math.ceil(state.images.length / newRows);
-            return { ...state, gridSize: { rows: newRows, cols: Math.max(prevCols, newCols) } };
+            return { ...state, gridCols: Math.max(prevCols, newCols), gridRows: newRows };
         }
         case "CHANGE_GRID_COLS": {
             const newCols = action.cols;
@@ -52,9 +52,9 @@ const montageReducer = (state: MontageState, action: MontageAction): MontageStat
                 return state;
             }
 
-            const prevRows = state.gridSize.rows;
+            const prevRows = state.gridRows;
             const newRows = Math.ceil(state.images.length / newCols);
-            return { ...state, gridSize: { rows: Math.max(prevRows, newRows), cols: newCols } };
+            return { ...state, gridRows: Math.max(prevRows, newRows), gridCols: newCols };
         }
         case "CHANGE_ELEM_SIZE":
             return { ...state, elemSize: action.size };
@@ -75,19 +75,14 @@ export const MontageContext = createContext<MontageContextProps | undefined>(und
 export const MontageContextProvider = ({ children }: PropsWithChildren) => {
     const [state, dispatch] = useReducer(montageReducer, {
         images: [],
-        gridSize: { rows: 1, cols: 1 },
+        gridRows: 1,
+        gridCols: 1,
+        maxGridCols: 12,
+        maxGridRows: 12,
         elemSize: "contain",
     });
 
-    const [elemWidth, elemHeight] = state.images.length === 0 ? [0, 0] : (
-        state.elemSize === "contain" ? [
-            Math.max(...state.images.map(image => image.img.width)),
-            Math.max(...state.images.map(image => image.img.height)),
-        ] : [
-            Math.min(...state.images.map(image => image.img.width)),
-            Math.min(...state.images.map(image => image.img.height)),
-        ]
-    );
+    const [elemWidth, elemHeight] = getElemSize(state.images, state.elemSize);
 
     return (
         <MontageContext.Provider value={{ state, dispatch, elemWidth, elemHeight }}>
@@ -97,6 +92,10 @@ export const MontageContextProvider = ({ children }: PropsWithChildren) => {
 }
 
 const getElemSize = (images: MontageImage[], elemSize: ElemSize): [width: number, height: number] => {
+    if (typeof elemSize === "string" && images.length === 0) {
+        return [0, 0];
+    }
+
     if (elemSize === "contain") {
         return [
             Math.max(...images.map(image => image.img.width)),
