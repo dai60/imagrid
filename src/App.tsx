@@ -6,6 +6,7 @@ import Download from "./components/Download";
 import Settings from "./components/Settings";
 import useMontage from "./hooks/useMontage";
 import useDrop from "./hooks/useDrop";
+import Canvas from "./canvas";
 
 const App = () => {
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
@@ -26,18 +27,16 @@ const App = () => {
         });
     }
 
-    const handleDownload = (type: string, quality: number) => {
+    const handleDownload = async (type: string, quality: number) => {
         setRendering(true);
 
-        const canvas = document.createElement("canvas");
-        canvas.width = elemWidth * state.gridCols;
-        canvas.height = elemHeight * state.gridRows;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-            console.error("error getting canvas context");
-            setRendering(false);
-            return;
-        }
+        const canvas = new Canvas({
+            gridRows: state.gridRows,
+            gridCols: state.gridCols,
+            elemWidth,
+            elemHeight,
+        });
+        canvas.clear("white");
 
         for (let y = 0; y < state.gridRows; ++y) {
             for (let x = 0; x < state.gridCols; ++x) {
@@ -47,17 +46,17 @@ const App = () => {
                 }
 
                 const image = state.images[index];
-                ctx.drawImage(image.img, x * elemWidth, y * elemHeight);
+                if (state.elemSize === "contain") {
+                    canvas.drawImageContain(image, x, y);
+                }
+                else {
+                    canvas.drawImageCover(image, x, y);
+                }
             }
         }
 
-        canvas.toBlob(blob => {
-            if (!blob) {
-                console.error("error creating blob");
-                setRendering(false);
-                return;
-            }
-
+        try {
+            const blob = await canvas.createBlob(type, quality);
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.style.display = "none";
@@ -74,7 +73,11 @@ const App = () => {
             link.click();
             document.body.removeChild(link);
             setRendering(false);
-        }, type, quality);
+        }
+        catch (e) {
+            setRendering(false);
+            console.error(e);
+        }
     }
 
     return (

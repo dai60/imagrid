@@ -30,11 +30,12 @@ const Item = ({ src, ref, style, attributes, listeners }: ItemProps) => {
     const itemStyle: CSSProperties = {
         aspectRatio: `${elemWidth} / ${elemHeight}`,
         backgroundImage: `url(${src})`,
+        backgroundSize: state.elemSize === "cover" ? "cover" : "contain",
         ...style,
     };
 
     return (
-        <div className="relative w-full bg-contain bg-center bg-no-repeat" ref={ref} style={itemStyle}>
+        <div className="relative w-full bg-center bg-no-repeat" ref={ref} style={itemStyle}>
             <div className="absolute inset-0 w-full h-full" {...attributes} {...listeners}></div>
             <button className="absolute top-2 right-2 cursor-pointer max-w-6 max-h-6 min-w-4 min-h-4 size-[25%]" onClick={handleDelete}>
                 <Close className="mix-blend-difference text-white size-full hover:invert-50 transition-all" />
@@ -97,13 +98,13 @@ const Grid = () => {
         setActive(undefined);
     }
 
-    const gridWidth = elemWidth * state.gridSize.cols;
-    const gridHeight = elemHeight * state.gridSize.rows;
+    const gridWidth = elemWidth * state.gridCols;
+    const gridHeight = elemHeight * state.gridRows;
 
     const style: CSSProperties = {
         aspectRatio: `${gridWidth} / ${gridHeight}`,
-        gridTemplateColumns: `repeat(${state.gridSize.cols}, 1fr)`,
-        gridTemplateRows: `repeat(${state.gridSize.rows}, 1fr)`,
+        gridTemplateColumns: `repeat(${state.gridCols}, 1fr)`,
+        gridTemplateRows: `repeat(${state.gridRows}, 1fr)`,
     };
 
     if (divWidth / gridWidth < divHeight / gridHeight) {

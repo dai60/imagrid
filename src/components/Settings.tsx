@@ -38,11 +38,11 @@ const Settings = () => {
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
 
     const handleGridRows: CounterEventHandler = (change) => {
-        dispatch({ type: "CHANGE_GRID_ROWS", rows: state.gridSize.rows + change });
+        dispatch({ type: "CHANGE_GRID_ROWS", rows: state.gridRows + change });
     }
 
     const handleGridCols: CounterEventHandler = (change) => {
-        dispatch({ type: "CHANGE_GRID_COLS", cols: state.gridSize.cols + change });
+        dispatch({ type: "CHANGE_GRID_COLS", cols: state.gridCols + change });
     }
 
     const handleElemSize: ChangeEventHandler<HTMLSelectElement> = (e) => {
@@ -55,10 +55,10 @@ const Settings = () => {
     return (
         <>
             <div className="my-2">
-                <Counter label="Grid Columns:" min={1} max={12} value={state.gridSize.cols} onChange={handleGridCols} />
+                <Counter label="Grid Columns:" min={1} max={12} value={state.gridCols} onChange={handleGridCols} />
             </div>
             <div className="my-2">
-                <Counter label="Grid Rows:" min={1} max={12} value={state.gridSize.rows} onChange={handleGridRows} />
+                <Counter label="Grid Rows:" min={1} max={12} value={state.gridRows} onChange={handleGridRows} />
             </div>
             <div className="my-2">
                 <label className="block text-xs mb-1">Element size:</label>
