@@ -37,23 +37,7 @@ const App = () => {
             elemHeight,
         });
         canvas.clear("white");
-
-        for (let y = 0; y < state.gridRows; ++y) {
-            for (let x = 0; x < state.gridCols; ++x) {
-                const index = y * state.gridCols + x;
-                if (index >= state.images.length) {
-                    continue;
-                }
-
-                const image = state.images[index];
-                if (state.elemSize === "contain") {
-                    canvas.drawImageContain(image, x, y);
-                }
-                else {
-                    canvas.drawImageCover(image, x, y);
-                }
-            }
-        }
+        canvas.drawImages(state.images, state.elemSize === "cover" ? "cover" : "contain");
 
         try {
             const blob = await canvas.createBlob(type, quality);
