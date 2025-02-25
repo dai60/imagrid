@@ -1,4 +1,4 @@
-import { MontageImage } from "./Montage";
+import { MontageImage, ObjectFit } from "./Montage";
 
 type CanvasSettings = {
     gridRows: number;
@@ -29,7 +29,7 @@ export default class Canvas {
         this.#ctx.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
     }
 
-    drawImages(images: MontageImage[], elemSize: "cover" | "contain") {
+    drawImages(images: MontageImage[], fit: ObjectFit) {
         for (let y = 0; y < this.settings.gridRows; ++y) {
             for (let x = 0; x < this.settings.gridCols; ++x) {
                 const index = y * this.settings.gridCols + x;
@@ -38,7 +38,7 @@ export default class Canvas {
                 }
 
                 const image = images[index];
-                if (elemSize === "contain") {
+                if (fit === "contain") {
                     this.drawImageContain(image, x, y);
                 }
                 else {

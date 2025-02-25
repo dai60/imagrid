@@ -30,7 +30,7 @@ const Item = ({ src, ref, style, attributes, listeners }: ItemProps) => {
     const itemStyle: CSSProperties = {
         aspectRatio: `${elemWidth} / ${elemHeight}`,
         backgroundImage: `url(${src})`,
-        backgroundSize: state.elemSize === "cover" ? "cover" : "contain",
+        backgroundSize: state.imageFit,
         ...style,
     };
 
@@ -117,7 +117,7 @@ const Grid = () => {
     return (
         <div ref={divRef} className="flex justify-center items-center size-full">
             {state.images.length === 0 ? (
-                <p className="select-none text-sm">Add some images to get started</p>
+                <p className="select-none text-xs sm:text-sm text-center">Add some images to get started</p>
             ) : (
                 <DndContext
                     sensors={sensors}

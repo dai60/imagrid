@@ -5,3 +5,7 @@
     --color-background: var(--color-black);
     --color-disabled: var(--color-zinc-700);
 }
+
+html, body, #root {
+    height: 100%;
+}

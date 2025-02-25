@@ -36,6 +36,9 @@ const Counter = ({ label, value, min, max, onChange }: CounterProps) => {
 
 const Settings = () => {
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
+    const id = useId();
+    const elemSizeId = id + "-size";
+    const imageFitId = id + "-fit";
 
     const handleGridRows: CounterEventHandler = (change) => {
         dispatch({ type: "CHANGE_GRID_ROWS", rows: state.gridRows + change });
@@ -46,10 +49,15 @@ const Settings = () => {
     }
 
     const handleElemSize: ChangeEventHandler<HTMLSelectElement> = (e) => {
-        if (e.target.value !== "contain" && e.target.value !== "cover") {
-            return;
+        if (e.target.value === "min" || e.target.value === "max") {
+            dispatch({ type: "CHANGE_ELEM_SIZE", size: e.target.value });
         }
-        dispatch({ type: "CHANGE_ELEM_SIZE", size: e.target.value });
+    }
+
+    const handleImageFit: ChangeEventHandler<HTMLSelectElement> = (e) => {
+        if (e.target.value === "cover" || e.target.value === "contain") {
+            dispatch({ type: "CHANGE_IMAGE_FIT", fit: e.target.value });
+        }
     }
 
     return (
@@ -61,14 +69,21 @@ const Settings = () => {
                 <Counter label="Grid Rows:" min={1} max={12} value={state.gridRows} onChange={handleGridRows} />
             </div>
             <div className="my-2">
-                <label className="block text-xs mb-1">Element size:</label>
-                <div className="flex items-center">
-                    <select className="bg-background border-primary border-1 px-2 py-1 rounded-md" defaultValue="contain" onChange={handleElemSize}>
-                        <option value="contain">Contain Image</option>
-                        <option value="cover">Fit Image</option>
+                <label htmlFor={elemSizeId} className="block text-xs mb-1">Element size:</label>
+                <div className="flex items-center gap-4">
+                    <select id={elemSizeId} className="bg-background border-primary border-1 px-2 py-1 rounded-md" defaultValue="max" onChange={handleElemSize}>
+                        <option value="max">Max Image</option>
+                        <option value="min">Min Image</option>
                     </select>
                     <span className="ms-auto select-none text-nowrap">{elemWidth} x {elemHeight} px</span>
                 </div>
+            </div>
+            <div className="my-2">
+                <label htmlFor={imageFitId} className="block text-xs mb-1">Image fit:</label>
+                <select id={imageFitId} className="bg-background border-primary border-1 px-2 py-1 rounded-md" defaultValue="cover" onChange={handleImageFit}>
+                    <option value="cover">Cover</option>
+                    <option value="contain">Contain</option>
+                </select>
             </div>
         </>
     );

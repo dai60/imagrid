@@ -37,7 +37,7 @@ const App = () => {
             elemHeight,
         });
         canvas.clear("white");
-        canvas.drawImages(state.images, state.elemSize === "cover" ? "cover" : "contain");
+        canvas.drawImages(state.images, state.imageFit);
 
         try {
             const blob = await canvas.createBlob(type, quality);
@@ -65,8 +65,8 @@ const App = () => {
     }
 
     return (
-        <div className="flex flex-col-reverse sm:flex-row max-w-screen h-screen max-h-screen">
-            <aside className="bg-background text-primary flex flex-col w-full sm:w-80 p-4">
+        <div className="flex flex-col-reverse sm:flex-row max-w-screen h-full">
+            <aside className="bg-background text-primary flex flex-col sm:w-80 p-4 overflow-y-auto">
                 <Upload onUpload={handleUpload} />
                 <Settings />
                 <div className="mt-auto">

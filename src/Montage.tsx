@@ -6,7 +6,9 @@ export type MontageImage = {
     img: HTMLImageElement;
 }
 
-type ElemSize = "contain" | "cover" | { width: number; height: number; };
+export type ElemSize = "min" | "max";
+
+export type ObjectFit = "cover" | "contain";
 
 type MontageState = {
     images: MontageImage[];
@@ -15,6 +17,7 @@ type MontageState = {
     maxGridRows: number;
     maxGridCols: number;
     elemSize: ElemSize;
+    imageFit: ObjectFit;
 }
 
 type MontageAction =
@@ -24,6 +27,7 @@ type MontageAction =
     | { type: "CHANGE_GRID_ROWS"; rows: number; }
     | { type: "CHANGE_GRID_COLS"; cols: number; }
     | { type: "CHANGE_ELEM_SIZE"; size: ElemSize; }
+    | { type: "CHANGE_IMAGE_FIT"; fit: ObjectFit; }
 
 const montageReducer = (state: MontageState, action: MontageAction): MontageState => {
     switch (action.type) {
@@ -58,6 +62,8 @@ const montageReducer = (state: MontageState, action: MontageAction): MontageStat
         }
         case "CHANGE_ELEM_SIZE":
             return { ...state, elemSize: action.size };
+        case "CHANGE_IMAGE_FIT":
+            return { ...state, imageFit: action.fit };
         default:
             return state;
     }
@@ -79,7 +85,8 @@ export const MontageContextProvider = ({ children }: PropsWithChildren) => {
         gridCols: 1,
         maxGridCols: 12,
         maxGridRows: 12,
-        elemSize: "contain",
+        elemSize: "max",
+        imageFit: "cover",
     });
 
     const [elemWidth, elemHeight] = getElemSize(state.images, state.elemSize);
@@ -92,23 +99,20 @@ export const MontageContextProvider = ({ children }: PropsWithChildren) => {
 }
 
 const getElemSize = (images: MontageImage[], elemSize: ElemSize): [width: number, height: number] => {
-    if (typeof elemSize === "string" && images.length === 0) {
+    if (images.length === 0) {
         return [0, 0];
     }
 
-    if (elemSize === "contain") {
+    if (elemSize === "max") {
         return [
             Math.max(...images.map(image => image.img.width)),
             Math.max(...images.map(image => image.img.height)),
         ];
     }
-    else if (elemSize === "cover") {
+    else {
         return [
             Math.min(...images.map(image => image.img.width)),
             Math.min(...images.map(image => image.img.height)),
         ];
-    }
-    else {
-        return [elemSize.width, elemSize.height];
     }
 }
