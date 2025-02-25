@@ -78,7 +78,7 @@ const App = () => {
                     <Download disabled={rendering} onDownload={handleDownload} />
                 </div>
             </aside>
-            <main className="p-8 flex-1">
+            <main className="bg-grid text-secondary p-8 flex-1">
                 <Grid onEmptyClick={handleEmptyGrid} />
             </main>
         </div>

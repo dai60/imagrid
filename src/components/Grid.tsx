@@ -6,7 +6,7 @@ import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { CSSProperties, Ref, useRef, useState } from "react";
 import useMontage from "../hooks/useMontage";
 import useObserver from "../hooks/useObserver";
-import { MdClose as Close } from "react-icons/md";
+import { MdClose as Close, MdFileUpload as FileUpload } from "react-icons/md";
 
 type ItemProps = {
     src: string;
@@ -121,9 +121,10 @@ const Grid = ({ onEmptyClick }: GridProps) => {
     return (
         <div ref={divRef} className="flex justify-center items-center size-full">
             {state.images.length === 0 ? (
-                <div onClick={onEmptyClick} className="cursor-pointer p-12">
+                <button onClick={onEmptyClick} className="cursor-pointer group p-4">
+                    <FileUpload className="mx-auto size-12 sm:size-16 group-hover:text-secondary/75 transition-colors" />
                     <p className="select-none text-xs sm:text-sm text-center">Add some images to get started</p>
-                </div>
+                </button>
             ) : (
                 <DndContext
                     sensors={sensors}

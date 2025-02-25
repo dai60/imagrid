@@ -2,7 +2,13 @@
 
 @theme {
     --color-primary: var(--color-zinc-50);
+    --color-secondary: var(--color-zinc-700);
+
     --color-background: var(--color-black);
+    --color-grid: var(--color-white);
+
+    --color-grid-border: var(--color-zinc-400);
+
     --color-disabled: var(--color-zinc-700);
 }
 
