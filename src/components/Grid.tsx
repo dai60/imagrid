@@ -66,7 +66,11 @@ const GridItem = ({ src, active }: GridItemProps) => {
     );
 }
 
-const Grid = () => {
+type GridProps = {
+    onEmptyClick: () => void;
+}
+
+const Grid = ({ onEmptyClick }: GridProps) => {
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
 
     const divRef = useRef<HTMLDivElement>(null);
@@ -117,7 +121,9 @@ const Grid = () => {
     return (
         <div ref={divRef} className="flex justify-center items-center size-full">
             {state.images.length === 0 ? (
-                <p className="select-none text-xs sm:text-sm text-center">Add some images to get started</p>
+                <div onClick={onEmptyClick} className="cursor-pointer p-12">
+                    <p className="select-none text-xs sm:text-sm text-center">Add some images to get started</p>
+                </div>
             ) : (
                 <DndContext
                     sensors={sensors}

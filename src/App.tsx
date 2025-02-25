@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { MontageImage } from "./Montage";
 import Upload from "./components/Upload";
 import Grid from "./components/Grid";
@@ -11,8 +11,13 @@ import Canvas from "./canvas";
 const App = () => {
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
     const [rendering, setRendering] = useState(false);
+    const uploadRef = useRef<HTMLInputElement>(null);
 
     useDrop(files => handleUpload(files));
+
+    const handleEmptyGrid = () => {
+        uploadRef.current?.click();
+    }
 
     const handleUpload = (files: File[]) => {
         const images = files.map(file => new Promise<MontageImage>(resolve => {
@@ -67,14 +72,14 @@ const App = () => {
     return (
         <div className="flex flex-col-reverse sm:flex-row max-w-screen h-full">
             <aside className="bg-background text-primary flex flex-col sm:w-80 p-4 overflow-y-auto">
-                <Upload onUpload={handleUpload} />
+                <Upload ref={uploadRef} onUpload={handleUpload} />
                 <Settings />
                 <div className="mt-auto">
                     <Download disabled={rendering} onDownload={handleDownload} />
                 </div>
             </aside>
             <main className="p-8 flex-1">
-                <Grid />
+                <Grid onEmptyClick={handleEmptyGrid} />
             </main>
         </div>
     );
