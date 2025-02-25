@@ -122,7 +122,7 @@ const Grid = ({ onEmptyClick }: GridProps) => {
         <div ref={divRef} className="flex justify-center items-center size-full">
             {state.images.length === 0 ? (
                 <button onClick={onEmptyClick} className="cursor-pointer group p-4">
-                    <FileUpload className="mx-auto size-12 sm:size-16 group-hover:text-secondary/75 transition-colors" />
+                    <FileUpload className="mx-auto mb-1 size-12 sm:size-16 group-hover:text-secondary/75 transition-colors" />
                     <p className="select-none text-xs sm:text-sm text-center">Add some images to get started</p>
                 </button>
             ) : (
