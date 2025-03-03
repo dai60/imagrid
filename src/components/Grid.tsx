@@ -121,8 +121,8 @@ const Grid = ({ onEmptyClick }: GridProps) => {
     return (
         <div ref={divRef} className="flex justify-center items-center size-full">
             {state.images.length === 0 ? (
-                <button onClick={onEmptyClick} className="cursor-pointer group p-4">
-                    <FileUpload className="mx-auto mb-1 size-12 sm:size-16 group-hover:text-secondary/75 transition-colors" />
+                <button onClick={onEmptyClick} className="cursor-pointer p-4 text-main-accent hover:brightness-125 transition-all">
+                    <FileUpload className="mx-auto mb-1 size-12 sm:size-16" />
                     <p className="select-none text-xs sm:text-sm text-center">Add some images to get started</p>
                 </button>
             ) : (
@@ -135,7 +135,7 @@ const Grid = ({ onEmptyClick }: GridProps) => {
                     onDragEnd={handleDragEnd}
                 >
                     <SortableContext items={state.images.map(image => image.url)} strategy={rectSortingStrategy}>
-                        <div className="grid border-2 border-black/20 border-dashed" style={style}>
+                        <div className="grid border-2 border-border border-dashed" style={style}>
                             {state.images.map(image => <GridItem key={image.url} src={image.url} active={image.url === active} />)}
                         </div>
                     </SortableContext>

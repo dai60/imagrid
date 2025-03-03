@@ -22,7 +22,7 @@ const Download = ({ disabled, onDownload }: DownloadProps) => {
         <div className="flex justify-between items-end">
             <div className="my-2">
                 <label className="block text-xs mb-1" htmlFor={fileId}>Save as:</label>
-                <select className="bg-background border-primary border-1 rounded-md px-2 py-1" id={fileId} defaultValue={file} onChange={e => setFile(e.target.value)}>
+                <select className="bg-sidebar border border-sidebar-accent rounded-md px-2 py-1" id={fileId} defaultValue={file} onChange={e => setFile(e.target.value)}>
                     <option value="image/png">png</option>
                     <option value="image/jpeg">jpeg</option>
                     <option value="image/webp">webp</option>
@@ -31,11 +31,11 @@ const Download = ({ disabled, onDownload }: DownloadProps) => {
             {file !== "image/png" && (
                 <div className="my-2">
                     <label className="block text-xs mb-1" htmlFor={qualityId}>Quality:</label>
-                    <input className="border-primary border-1 rounded-md px-2 py-1 w-16" type="number" id={qualityId} min={0} max={100} defaultValue={quality} onChange={e => setQuality(e.target.valueAsNumber)} />
+                    <input className="border border-sidebar-accent rounded-md px-2 py-1 w-16" type="number" id={qualityId} min={0} max={100} defaultValue={quality} onChange={e => setQuality(e.target.valueAsNumber)} />
                 </div>
             )}
             <button
-                className="my-2 bg-primary disabled:bg-disabled text-background px-2 py-1 rounded-md font-semibold cursor-pointer disabled:cursor-default transition-colors"
+                className="my-2 border border-sidebar-accent bg-sidebar-accent hover:not-disabled:brightness-120 disabled:opacity-50 text-background px-2 py-1 rounded-md not-disabled:cursor-pointer transition-all"
                 disabled={disabled}
                 onClick={handleDownload}
             >

@@ -71,14 +71,14 @@ const App = () => {
 
     return (
         <div className="flex flex-col-reverse sm:flex-row max-w-screen h-full">
-            <aside className="bg-background text-primary flex flex-col sm:w-80 p-4 overflow-y-auto">
+            <aside className="bg-sidebar text-text flex flex-col sm:w-80 p-4 overflow-y-auto">
                 <Upload ref={uploadRef} onUpload={handleUpload} />
                 <Settings />
                 <div className="mt-auto">
-                    <Download disabled={rendering} onDownload={handleDownload} />
+                    <Download disabled={rendering || state.images.length === 0} onDownload={handleDownload} />
                 </div>
             </aside>
-            <main className="bg-grid text-secondary p-8 flex-1">
+            <main className="bg-main text-text p-8 flex-1">
                 <Grid onEmptyClick={handleEmptyGrid} />
             </main>
         </div>

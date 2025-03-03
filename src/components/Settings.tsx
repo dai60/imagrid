@@ -23,12 +23,12 @@ const Counter = ({ label, addLabel, removeLabel, value, min, max, onChange }: Co
     return (
         <>
             <label className="block text-xs mb-1" htmlFor={id}>{label}</label>
-            <div className="flex items-stretch w-fit border border-primary rounded-md overflow-hidden">
+            <div className="flex items-stretch w-fit border border-sidebar-accent rounded-md overflow-hidden">
                 <input className="w-14 px-2 py-1" type="number" id={id} readOnly disabled value={value} min={min} max={max} step={1} />
-                <button className="px-2 py-1 w-8 disabled:bg-disabled cursor-pointer disabled:cursor-default" aria-label={addLabel} disabled={isMax} onClick={() => onChange(1)}>
+                <button className="px-2 py-1 w-8 rounded-l-sm bg-sidebar-accent hover:not-disabled:brightness-120 disabled:opacity-50 not-disabled:cursor-pointer" aria-label={addLabel} disabled={isMax} onClick={() => onChange(1)}>
                     <Add />
                 </button>
-                <button className="px-2 py-1 w-8 disabled:bg-disabled cursor-pointer disabled:cursor-default" aria-label={removeLabel} disabled={isMin} onClick={() => onChange(-1)}>
+                <button className="px-2 py-1 w-8 rounded-r-sm bg-sidebar-accent hover:not-disabled:brightness-120 disabled:opacity-50 not-disabled:cursor-pointer" aria-label={removeLabel} disabled={isMin} onClick={() => onChange(-1)}>
                     <Remove />
                 </button>
             </div>
@@ -73,7 +73,7 @@ const Settings = () => {
             <div className="my-2">
                 <label htmlFor={elemSizeId} className="block text-xs mb-1">Element size:</label>
                 <div className="flex items-center gap-4">
-                    <select id={elemSizeId} className="bg-background border-primary border-1 px-2 py-1 rounded-md" defaultValue="max" onChange={handleElemSize}>
+                    <select id={elemSizeId} className="bg-sidebar border border-sidebar-accent px-2 py-1 rounded-md" defaultValue="max" onChange={handleElemSize}>
                         <option value="max">Max Image</option>
                         <option value="min">Min Image</option>
                     </select>
@@ -82,7 +82,7 @@ const Settings = () => {
             </div>
             <div className="my-2">
                 <label htmlFor={imageFitId} className="block text-xs mb-1">Image fit:</label>
-                <select id={imageFitId} className="bg-background border-primary border-1 px-2 py-1 rounded-md" defaultValue="cover" onChange={handleImageFit}>
+                <select id={imageFitId} className="bg-sidebar border border-sidebar-accent px-2 py-1 rounded-md" defaultValue="cover" onChange={handleImageFit}>
                     <option value="cover">Cover</option>
                     <option value="contain">Contain</option>
                 </select>

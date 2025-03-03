@@ -19,7 +19,7 @@ const Upload = ({ ref, onUpload }: UploadProps) => {
     return (
         <div className="my-2">
             <label className="block text-xs mb-1" htmlFor={id}>Upload images:</label>
-            <button className="border-primary border-1 rounded-md px-2 py-1 cursor-pointer" id={id} onClick={() => ref.current?.click()}>Choose Files</button>
+            <button className="bg-sidebar-accent hover:brightness-120 rounded-md px-2 py-1 cursor-pointer transition-all" id={id} onClick={() => ref.current?.click()}>Choose Files</button>
             <input className="hidden" ref={ref} type="file" accept="image/*" multiple onChange={handleChange} />
         </div>
     );

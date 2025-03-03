@@ -1,5 +1,5 @@
 import { arrayMove } from "@dnd-kit/sortable";
-import { createContext, Dispatch, PropsWithChildren, useReducer } from "react";
+import { createContext, Dispatch, PropsWithChildren, useMemo, useReducer } from "react";
 
 export type MontageImage = {
     url: string;
@@ -89,7 +89,10 @@ export const MontageContextProvider = ({ children }: PropsWithChildren) => {
         imageFit: "cover",
     });
 
-    const [elemWidth, elemHeight] = getElemSize(state.images, state.elemSize);
+    const [elemWidth, elemHeight] = useMemo(
+        () => getElemSize(state.images, state.elemSize),
+        [state.images, state.elemSize],
+    );
 
     return (
         <MontageContext.Provider value={{ state, dispatch, elemWidth, elemHeight }}>
