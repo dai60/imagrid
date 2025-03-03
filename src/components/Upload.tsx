@@ -1,4 +1,5 @@
 import { ChangeEventHandler, RefObject, useId } from "react";
+import { useTranslation } from "react-i18next";
 
 type UploadProps = {
     ref: RefObject<HTMLInputElement | null>;
@@ -6,6 +7,7 @@ type UploadProps = {
 }
 
 const Upload = ({ ref, onUpload }: UploadProps) => {
+    const { t } = useTranslation();
     const id = useId();
 
     const handleChange: ChangeEventHandler<HTMLInputElement> = e => {
@@ -18,8 +20,8 @@ const Upload = ({ ref, onUpload }: UploadProps) => {
 
     return (
         <div className="my-2">
-            <label className="block text-xs mb-1" htmlFor={id}>Upload images:</label>
-            <button className="bg-sidebar-accent hover:brightness-120 rounded-md px-2 py-1 cursor-pointer transition-all" id={id} onClick={() => ref.current?.click()}>Choose Files</button>
+            <label className="block text-xs mb-1" htmlFor={id}>{t("uploadImages")}:</label>
+            <button className="bg-sidebar-accent hover:brightness-120 rounded-md px-2 py-1 cursor-pointer transition-all" id={id} onClick={() => ref.current?.click()}>{t("chooseFiles")}</button>
             <input className="hidden" ref={ref} type="file" accept="image/*" multiple onChange={handleChange} />
         </div>
     );

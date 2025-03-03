@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MontageImage } from "./Montage";
 import Upload from "./components/Upload";
 import Grid from "./components/Grid";
@@ -9,6 +10,7 @@ import useDrop from "./hooks/useDrop";
 import Canvas from "./canvas";
 
 const App = () => {
+    const { i18n } = useTranslation();
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
     const [rendering, setRendering] = useState(false);
     const uploadRef = useRef<HTMLInputElement>(null);
@@ -69,8 +71,10 @@ const App = () => {
         }
     }
 
+    const font = i18n.resolvedLanguage === "jp" ? "font-m-plus" : "font-fira-sans";
+
     return (
-        <div className="flex flex-col-reverse sm:flex-row max-w-screen h-full">
+        <div className={`flex flex-col-reverse sm:flex-row max-w-screen h-full ${font}`}>
             <aside className="bg-sidebar text-text flex flex-col sm:w-80 p-4 overflow-y-auto">
                 <Upload ref={uploadRef} onUpload={handleUpload} />
                 <Settings />

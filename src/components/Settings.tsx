@@ -1,6 +1,7 @@
 import { ChangeEventHandler, useId } from "react";
 import useMontage from "../hooks/useMontage";
 import { MdAdd as Add, MdRemove as Remove } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 
 type CounterEventHandler = (change: number) => void;
 
@@ -37,6 +38,7 @@ const Counter = ({ label, addLabel, removeLabel, value, min, max, onChange }: Co
 }
 
 const Settings = () => {
+    const { t } = useTranslation();
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
     const id = useId();
     const elemSizeId = id + "-size";
@@ -65,26 +67,26 @@ const Settings = () => {
     return (
         <>
             <div className="my-2">
-                <Counter label="Grid Columns:" addLabel="Add column" removeLabel="Remove column" min={1} max={12} value={state.gridCols} onChange={handleGridCols} />
+                <Counter label={t("gridColumns") + ":"} addLabel="Add column" removeLabel="Remove column" min={1} max={12} value={state.gridCols} onChange={handleGridCols} />
             </div>
             <div className="my-2">
-                <Counter label="Grid Rows:" addLabel="Add row" removeLabel="Remove row" min={1} max={12} value={state.gridRows} onChange={handleGridRows} />
+                <Counter label={t("gridRows") + ":"} addLabel="Add row" removeLabel="Remove row" min={1} max={12} value={state.gridRows} onChange={handleGridRows} />
             </div>
             <div className="my-2">
-                <label htmlFor={elemSizeId} className="block text-xs mb-1">Element size:</label>
+                <label htmlFor={elemSizeId} className="block text-xs mb-1">{t("elementSize")}:</label>
                 <div className="flex items-center gap-4">
                     <select id={elemSizeId} className="bg-sidebar border border-sidebar-accent px-2 py-1 rounded-md" defaultValue="max" onChange={handleElemSize}>
-                        <option value="max">Max Image</option>
-                        <option value="min">Min Image</option>
+                        <option value="max">{t("maxImage")}</option>
+                        <option value="min">{t("minImage")}</option>
                     </select>
                     {state.images.length > 1 && <span className="ms-auto select-none text-nowrap">{elemWidth} x {elemHeight} px</span>}
                 </div>
             </div>
             <div className="my-2">
-                <label htmlFor={imageFitId} className="block text-xs mb-1">Image fit:</label>
+                <label htmlFor={imageFitId} className="block text-xs mb-1">{t("imageFit")}:</label>
                 <select id={imageFitId} className="bg-sidebar border border-sidebar-accent px-2 py-1 rounded-md" defaultValue="cover" onChange={handleImageFit}>
-                    <option value="cover">Cover</option>
-                    <option value="contain">Contain</option>
+                    <option value="cover">{t("cover")}</option>
+                    <option value="contain">{t("contain")}</option>
                 </select>
             </div>
         </>

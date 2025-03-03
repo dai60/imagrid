@@ -7,6 +7,7 @@ import { CSSProperties, Ref, useRef, useState } from "react";
 import useMontage from "../hooks/useMontage";
 import useObserver from "../hooks/useObserver";
 import { MdClose as Close, MdFileUpload as FileUpload } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 
 type ItemProps = {
     src: string;
@@ -17,6 +18,7 @@ type ItemProps = {
 }
 
 const Item = ({ src, ref, style, attributes, listeners }: ItemProps) => {
+    const { t } = useTranslation();
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
 
     const handleDelete = () => {
@@ -37,7 +39,7 @@ const Item = ({ src, ref, style, attributes, listeners }: ItemProps) => {
     return (
         <div className="relative w-full bg-center bg-no-repeat" ref={ref} style={itemStyle}>
             <div className="absolute inset-0 w-full h-full" {...attributes} {...listeners}></div>
-            <button className="absolute top-2 right-2 cursor-pointer max-w-6 max-h-6 min-w-4 min-h-4 size-[25%]" onClick={handleDelete}>
+            <button className="absolute top-2 right-2 cursor-pointer max-w-6 max-h-6 min-w-4 min-h-4 size-[25%]" aria-label={t("removeImage")} onClick={handleDelete}>
                 <Close className="mix-blend-difference text-white size-full hover:invert-50 transition-all" />
             </button>
         </div>
@@ -71,6 +73,7 @@ type GridProps = {
 }
 
 const Grid = ({ onEmptyClick }: GridProps) => {
+    const { t } = useTranslation();
     const { elemWidth, elemHeight, state, dispatch } = useMontage();
 
     const divRef = useRef<HTMLDivElement>(null);
@@ -123,7 +126,7 @@ const Grid = ({ onEmptyClick }: GridProps) => {
             {state.images.length === 0 ? (
                 <button onClick={onEmptyClick} className="cursor-pointer p-4 text-main-accent hover:brightness-125 transition-all">
                     <FileUpload className="mx-auto mb-1 size-12 sm:size-16" />
-                    <p className="select-none text-xs sm:text-sm text-center">Add some images to get started</p>
+                    <p className="select-none text-xs sm:text-sm text-center">{t("addImages")}</p>
                 </button>
             ) : (
                 <DndContext
