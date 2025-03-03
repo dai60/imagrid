@@ -77,7 +77,7 @@ const Settings = () => {
                         <option value="max">Max Image</option>
                         <option value="min">Min Image</option>
                     </select>
-                    <span className="ms-auto select-none text-nowrap">{elemWidth} x {elemHeight} px</span>
+                    {state.images.length > 1 && <span className="ms-auto select-none text-nowrap">{elemWidth} x {elemHeight} px</span>}
                 </div>
             </div>
             <div className="my-2">
