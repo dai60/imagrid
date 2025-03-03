@@ -1,3 +1,4 @@
+@import "@fontsource/fira-sans";
 @import "tailwindcss";
 
 html, body, #root {
@@ -9,10 +10,12 @@ html, body, #root {
 }
 
 @theme {
+    --font-fira-sans: 'Fira Sans', sans-serif;
+
     --color-main: light-dark(var(--color-white), var(--color-zinc-800));
     --color-sidebar: light-dark(var(--color-zinc-200), var(--color-zinc-950));
 
-    --color-sidebar-accent: light-dark(var(--color-indigo-600), var(--color-indigo-500));
+    --color-sidebar-accent: light-dark(var(--color-indigo-300), var(--color-indigo-500));
     --color-main-accent: light-dark(var(--color-indigo-500), var(--color-indigo-400));
 
     --color-text: light-dark(var(--color-zinc-900), var(--color-zinc-100));
