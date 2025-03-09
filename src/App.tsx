@@ -82,7 +82,7 @@ const App = () => {
                     <Download disabled={rendering || state.images.length === 0} onDownload={handleDownload} />
                 </div>
             </aside>
-            <main className="bg-main text-text p-8 flex-1">
+            <main className="bg-main text-text flex-1 min-h-48 p-8">
                 <Grid onEmptyClick={handleEmptyGrid} />
             </main>
         </div>

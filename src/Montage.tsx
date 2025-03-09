@@ -69,7 +69,7 @@ const montageReducer = (state: MontageState, action: MontageAction): MontageStat
     }
 }
 
-type MontageContextProps = {
+export type MontageContextProps = {
     state: MontageState,
     dispatch: Dispatch<MontageAction>;
     elemWidth: number;

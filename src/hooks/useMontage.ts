@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { MontageContext } from "../Montage";
+import { MontageContext, MontageContextProps } from "../Montage";
 
-const useMontage = () => {
+const useMontage = (): MontageContextProps => {
     const context = useContext(MontageContext);
     if (!context) {
         throw new Error("useMontageContext must be used within a MontageContextProvider");

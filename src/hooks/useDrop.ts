@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const useDrop = (callback: (files: File[]) => void) => {
+const useDrop = (callback: (files: File[]) => void): void => {
     useEffect(() => {
         const handleDragOver = (e: DragEvent) => {
             e.preventDefault();
