@@ -19,20 +19,23 @@ const App = () => {
 
     const handleEmptyGrid = () => {
         uploadRef.current?.click();
-    }
+    };
 
     const handleUpload = (files: File[]) => {
-        const images = files.map(file => new Promise<MontageImage>(resolve => {
-            const url = URL.createObjectURL(file);
-            const img = new Image();
-            img.onload = () => resolve({ url, img });
-            img.src = url;
-        }));
+        const images = files.map(
+            file =>
+                new Promise<MontageImage>(resolve => {
+                    const url = URL.createObjectURL(file);
+                    const img = new Image();
+                    img.onload = () => resolve({ url, img });
+                    img.src = url;
+                }),
+        );
 
         Promise.all(images).then(images => {
             dispatch({ type: "ADD_IMAGES", images });
         });
-    }
+    };
 
     const handleDownload = async (type: string, quality: number) => {
         setRendering(true);
@@ -54,9 +57,7 @@ const App = () => {
             link.href = url;
 
             const extension =
-                type === "image/png" ? ".png" :
-                type === "image/jpeg" ? ".jpeg" :
-                type === "image/webp" ? ".webp" : "";
+                type === "image/png" ? ".png" : type === "image/jpeg" ? ".jpeg" : type === "image/webp" ? ".webp" : "";
 
             link.download = `${Date.now()}${extension}`;
 
@@ -64,29 +65,28 @@ const App = () => {
             link.click();
             document.body.removeChild(link);
             setRendering(false);
-        }
-        catch (e) {
+        } catch (e) {
             setRendering(false);
             console.error(e);
         }
-    }
+    };
 
     const font = i18n.resolvedLanguage === "jp" ? "font-m-plus" : "font-fira-sans";
 
     return (
-        <div className={`flex flex-col-reverse sm:flex-row max-w-screen h-full ${font}`}>
-            <aside className="bg-sidebar text-text flex flex-col sm:w-80 p-4 overflow-y-auto">
+        <div className={`flex h-full max-w-screen flex-col-reverse sm:flex-row ${font}`}>
+            <aside className="bg-sidebar text-text flex flex-col overflow-y-auto p-4 sm:w-80">
                 <Upload ref={uploadRef} onUpload={handleUpload} />
                 <Settings />
                 <div className="mt-auto">
                     <Download disabled={rendering || state.images.length === 0} onDownload={handleDownload} />
                 </div>
             </aside>
-            <main className="bg-main text-text flex-1 min-h-48 p-8">
+            <main className="bg-main text-text min-h-48 flex-1 p-8">
                 <Grid onEmptyClick={handleEmptyGrid} />
             </main>
         </div>
     );
-}
+};
 
 export default App;

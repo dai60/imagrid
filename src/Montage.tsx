@@ -4,7 +4,7 @@ import { createContext, Dispatch, PropsWithChildren, useMemo, useReducer } from 
 export type MontageImage = {
     url: string;
     img: HTMLImageElement;
-}
+};
 
 export type ElemSize = "min" | "max";
 
@@ -18,24 +18,25 @@ type MontageState = {
     maxGridCols: number;
     elemSize: ElemSize;
     imageFit: ObjectFit;
-}
+};
 
 type MontageAction =
-    | { type: "ADD_IMAGES"; images: MontageImage[]; }
-    | { type: "REMOVE_IMAGE"; index: number; }
-    | { type: "MOVE_IMAGE"; from: number; to: number; }
-    | { type: "CHANGE_GRID_ROWS"; rows: number; }
-    | { type: "CHANGE_GRID_COLS"; cols: number; }
-    | { type: "CHANGE_ELEM_SIZE"; size: ElemSize; }
-    | { type: "CHANGE_IMAGE_FIT"; fit: ObjectFit; }
+    | { type: "ADD_IMAGES"; images: MontageImage[] }
+    | { type: "REMOVE_IMAGE"; index: number }
+    | { type: "MOVE_IMAGE"; from: number; to: number }
+    | { type: "CHANGE_GRID_ROWS"; rows: number }
+    | { type: "CHANGE_GRID_COLS"; cols: number }
+    | { type: "CHANGE_ELEM_SIZE"; size: ElemSize }
+    | { type: "CHANGE_IMAGE_FIT"; fit: ObjectFit };
 
 const montageReducer = (state: MontageState, action: MontageAction): MontageState => {
     switch (action.type) {
-        case "ADD_IMAGES":
+        case "ADD_IMAGES": {
             const newImages = [...state.images, ...action.images];
             const prevCols = state.gridCols;
             const newCols = Math.ceil(newImages.length / state.gridRows);
             return { ...state, images: newImages, gridCols: Math.max(prevCols, newCols) };
+        }
         case "REMOVE_IMAGE":
             return { ...state, images: state.images.toSpliced(action.index, 1) };
         case "MOVE_IMAGE":
@@ -67,14 +68,14 @@ const montageReducer = (state: MontageState, action: MontageAction): MontageStat
         default:
             return state;
     }
-}
+};
 
 export type MontageContextProps = {
-    state: MontageState,
+    state: MontageState;
     dispatch: Dispatch<MontageAction>;
     elemWidth: number;
     elemHeight: number;
-}
+};
 
 export const MontageContext = createContext<MontageContextProps | undefined>(undefined);
 
@@ -95,11 +96,9 @@ export const MontageContextProvider = ({ children }: PropsWithChildren) => {
     );
 
     return (
-        <MontageContext.Provider value={{ state, dispatch, elemWidth, elemHeight }}>
-            {children}
-        </MontageContext.Provider>
+        <MontageContext.Provider value={{ state, dispatch, elemWidth, elemHeight }}>{children}</MontageContext.Provider>
     );
-}
+};
 
 const getElemSize = (images: MontageImage[], elemSize: ElemSize): [width: number, height: number] => {
     if (images.length === 0) {
@@ -107,15 +106,8 @@ const getElemSize = (images: MontageImage[], elemSize: ElemSize): [width: number
     }
 
     if (elemSize === "max") {
-        return [
-            Math.max(...images.map(image => image.img.width)),
-            Math.max(...images.map(image => image.img.height)),
-        ];
+        return [Math.max(...images.map(image => image.img.width)), Math.max(...images.map(image => image.img.height))];
+    } else {
+        return [Math.min(...images.map(image => image.img.width)), Math.min(...images.map(image => image.img.height))];
     }
-    else {
-        return [
-            Math.min(...images.map(image => image.img.width)),
-            Math.min(...images.map(image => image.img.height)),
-        ];
-    }
-}
+};

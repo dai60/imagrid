@@ -7,7 +7,7 @@ declare module "i18next" {
     interface CustomTypeOptions {
         resources: {
             translation: Translation;
-        }
+        };
     }
 }
 
@@ -61,15 +61,13 @@ const pathDetector: LanguageDetectorAsyncModule = {
     detect: callback => {
         if (window.location.pathname === "/ja" || window.location.pathname === "/jp") {
             callback("jp");
-        }
-        else {
+        } else {
             callback("en");
         }
     },
 };
 
-i18n
-    .use(initReactI18next)
+i18n.use(initReactI18next)
     .use(pathDetector)
     .init({
         resources: {
@@ -85,6 +83,6 @@ i18n
         interpolation: {
             escapeValue: false,
         },
-});
+    });
 
 export default i18n;

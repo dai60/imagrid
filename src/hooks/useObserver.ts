@@ -9,7 +9,9 @@ const useObserver = (ref: RefObject<HTMLElement | null>): [width: number, height
         }
 
         const observer = new ResizeObserver(entries => {
-            for (const { contentRect: { width, height } } of entries) {
+            for (const {
+                contentRect: { width, height },
+            } of entries) {
                 setSize({ width, height });
             }
         });
@@ -18,6 +20,6 @@ const useObserver = (ref: RefObject<HTMLElement | null>): [width: number, height
     }, [ref]);
 
     return [size.width, size.height];
-}
+};
 
 export default useObserver;

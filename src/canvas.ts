@@ -5,7 +5,7 @@ type CanvasSettings = {
     gridCols: number;
     elemWidth: number;
     elemHeight: number;
-}
+};
 
 export default class Canvas {
     settings: CanvasSettings;
@@ -40,8 +40,7 @@ export default class Canvas {
                 const image = images[index];
                 if (fit === "contain") {
                     this.drawImageContain(image, x, y);
-                }
-                else {
+                } else {
                     this.drawImageCover(image, x, y);
                 }
             }
@@ -61,7 +60,6 @@ export default class Canvas {
         const dy = row * elemHeight + (elemHeight - dh) / 2;
 
         this.#ctx.drawImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
-
     }
 
     drawImageCover({ img }: MontageImage, col: number, row: number) {
@@ -79,8 +77,7 @@ export default class Canvas {
             sh = img.height;
             sx = (img.width - sw) / 2;
             sy = 0;
-        }
-        else {
+        } else {
             sw = img.width;
             sh = img.width / elemRatio;
             sx = 0;
@@ -92,14 +89,17 @@ export default class Canvas {
 
     createBlob(type: string, quality: number): Promise<Blob> {
         return new Promise((resolve, reject) => {
-            this.#canvas.toBlob(blob => {
-                if (!blob) {
-                    reject(new Error("error creating blob"));
-                }
-                else {
-                    resolve(blob);
-                }
-            }, type, quality);
+            this.#canvas.toBlob(
+                blob => {
+                    if (!blob) {
+                        reject(new Error("error creating blob"));
+                    } else {
+                        resolve(blob);
+                    }
+                },
+                type,
+                quality,
+            );
         });
     }
 }

@@ -4,7 +4,7 @@ const useDrop = (callback: (files: File[]) => void): void => {
     useEffect(() => {
         const handleDragOver = (e: DragEvent) => {
             e.preventDefault();
-        }
+        };
 
         const handleDrop = (e: DragEvent) => {
             e.preventDefault();
@@ -18,7 +18,7 @@ const useDrop = (callback: (files: File[]) => void): void => {
                 .filter(file => file !== null);
 
             callback(files);
-        }
+        };
 
         window.addEventListener("dragover", handleDragOver);
         window.addEventListener("drop", handleDrop);
@@ -26,8 +26,8 @@ const useDrop = (callback: (files: File[]) => void): void => {
         return () => {
             window.removeEventListener("dragover", handleDragOver);
             window.removeEventListener("drop", handleDrop);
-        }
-    }, []);
-}
+        };
+    }, [callback]);
+};
 
 export default useDrop;
