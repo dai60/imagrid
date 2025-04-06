@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MontageImage } from "./Montage";
-import Upload from "./components/Upload";
-import Grid from "./components/Grid";
-import Download from "./components/Download";
-import Settings from "./components/Settings";
-import useMontage from "./hooks/useMontage";
-import useDrop from "./hooks/useDrop";
 import Canvas from "./canvas";
+import Download from "./components/Download";
+import Grid from "./components/Grid";
+import Settings from "./components/Settings";
+import Upload from "./components/Upload";
+import useDrop from "./hooks/useDrop";
+import useMontage from "./hooks/useMontage";
 
 const App = () => {
     const { i18n } = useTranslation();

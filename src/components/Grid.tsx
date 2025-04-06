@@ -12,15 +12,15 @@ import {
     useSensor,
     useSensors,
 } from "@dnd-kit/core";
+import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { CSSProperties, Ref, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { MdClose as Close, MdFileUpload as FileUpload } from "react-icons/md";
 import useMontage from "../hooks/useMontage";
 import useObserver from "../hooks/useObserver";
-import { MdClose as Close, MdFileUpload as FileUpload } from "react-icons/md";
-import { useTranslation } from "react-i18next";
 
 type ItemProps = {
     src: string;

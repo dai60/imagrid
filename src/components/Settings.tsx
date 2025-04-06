@@ -1,7 +1,7 @@
 import { ChangeEventHandler, useId } from "react";
-import useMontage from "../hooks/useMontage";
-import { MdAdd as Add, MdRemove as Remove } from "react-icons/md";
 import { useTranslation } from "react-i18next";
+import { MdAdd as Add, MdRemove as Remove } from "react-icons/md";
+import useMontage from "../hooks/useMontage";
 
 type CounterEventHandler = (change: number) => void;
 
